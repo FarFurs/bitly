@@ -4,15 +4,18 @@ import os
 from dotenv import load_dotenv
 
 
-dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-if os.path.exists(dotenv_path):
-    load_dotenv(dotenv_path)
-_TOKEN = os.environ.get('TOKEN')
 
 
-def is_bitlink(url):
-    if url.split('/')[2] == 'bit.ly':
+def is_bitlink(token, url):
+    url = url.strip("https://")
+    headers = {
+        'Authorization': f'Bearer {token}',
+    }   
+
+    response = requests.get(f'https://api-ssl.bitly.com/v4/bitlinks/{url}', headers=headers)
+    if response.status_code != 404:
         return True
+    # pass
 
 
 def shorten_link(token, url):
@@ -53,14 +56,18 @@ def count_clicks(token, link):
 
 
 def main() -> None:
+    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+    if os.path.exists(dotenv_path):
+        load_dotenv(dotenv_path)
+    _BITLY_TOKEN = os.environ['BITLY_TOKEN']
     url = input('Введите ссылку: ')
     try:
-        status = is_bitlink(url)
+        status = is_bitlink(_BITLY_TOKEN, url)
         if status:
-            clicks = count_clicks(_TOKEN, url)
+            clicks = count_clicks(_BITLY_TOKEN, url)
             print('Клики', clicks)
         else:
-            data = shorten_link(_TOKEN, url)
+            data = shorten_link(_BITLY_TOKEN, url)
             print('Битлинк ', data['link'])
     except requests.exceptions.HTTPError:
         print('Ошибка')
