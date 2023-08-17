@@ -1,5 +1,4 @@
 import requests
-import json
 import os
 from dotenv import load_dotenv
 
@@ -26,14 +25,12 @@ def shorten_link(token, url):
     data = {"long_url": url,
             "domain": "bit.ly",
             }
-    data = json.dumps(data)
     response = requests.post(
         'https://api-ssl.bitly.com/v4/shorten',
         headers=headers,
-        data=data)
+        json=data)
     response.raise_for_status()
-    data = json.loads(response.text)
-    return data
+    return response.json()
 
 
 def count_clicks(token, link):
@@ -41,18 +38,14 @@ def count_clicks(token, link):
         'Authorization': f'Bearer {token}'
     }
     params = {'unit': 'month', 'units': '1'}
-    params = json.dumps(params)
+    # params = json.dumps(params)
     link = link.strip('https://')
     response = requests.get(
-        f'https://api-ssl.bitly.com/v4/bitlinks/{link}/clicks',
+        f'https://api-ssl.bitly.com/v4/bitlinks/{link}/clicks/summary',
         headers=headers,
         params=params)
     response.raise_for_status()
-    data = json.loads(response.text)
-    clicks = 0
-    for day_clicks in data['link_clicks']:
-        clicks += day_clicks['clicks']
-    return clicks
+    return response.json()['total_clicks']
 
 
 def main() -> None:
@@ -60,10 +53,10 @@ def main() -> None:
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path)
     _BITLY_TOKEN = os.environ['BITLY_TOKEN']
+
     url = input('Введите ссылку: ')
     try:
-        status = is_bitlink(_BITLY_TOKEN, url)
-        if status:
+        if is_bitlink(_BITLY_TOKEN, url):
             clicks = count_clicks(_BITLY_TOKEN, url)
             print('Клики', clicks)
         else:
