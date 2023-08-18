@@ -1,18 +1,19 @@
 import requests
 import os
 from dotenv import load_dotenv
+from urllib.parse import urlparse
 
 
 
 
 def is_bitlink(token, url):
-    url = url.strip("https://")
+    url = url.replace(f'{urlparse(url).scheme}://', '', 1)
     headers = {
         'Authorization': f'Bearer {token}',
     }   
 
     response = requests.get(f'https://api-ssl.bitly.com/v4/bitlinks/{url}', headers=headers)
-    if not response.ok:
+    if response.ok:
         return True
 
 
@@ -35,7 +36,7 @@ def count_clicks(token, link):
         'Authorization': f'Bearer {token}'
     }
     params = {'unit': 'month', 'units': '1'}
-    link = link.strip('https://')
+    link = link.replace(f'{urlparse(link).scheme}://', '', 1)
     response = requests.get(
         f'https://api-ssl.bitly.com/v4/bitlinks/{link}/clicks/summary',
         headers=headers,
