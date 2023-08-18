@@ -12,7 +12,7 @@ def is_bitlink(token, url):
     }   
 
     response = requests.get(f'https://api-ssl.bitly.com/v4/bitlinks/{url}', headers=headers)
-    if response.status_code != 404:
+    if not response.ok:
         return True
 
 
