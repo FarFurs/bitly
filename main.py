@@ -14,7 +14,6 @@ def is_bitlink(token, url):
     response = requests.get(f'https://api-ssl.bitly.com/v4/bitlinks/{url}', headers=headers)
     if response.status_code != 404:
         return True
-    # pass
 
 
 def shorten_link(token, url):
@@ -38,7 +37,6 @@ def count_clicks(token, link):
         'Authorization': f'Bearer {token}'
     }
     params = {'unit': 'month', 'units': '1'}
-    # params = json.dumps(params)
     link = link.strip('https://')
     response = requests.get(
         f'https://api-ssl.bitly.com/v4/bitlinks/{link}/clicks/summary',
@@ -63,7 +61,7 @@ def main() -> None:
             data = shorten_link(bitly_token, url)
             print('Битлинк ', data['link'])
     except requests.exceptions.HTTPError:
-        print('Ошибка')
+        print('Вы ввели неверную ссылку или неверный токен')
 
 
 if __name__ == '__main__':
