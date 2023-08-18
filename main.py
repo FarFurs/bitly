@@ -21,13 +21,11 @@ def shorten_link(token, url):
         'Authorization': f'Bearer {token}'
     }
 
-    data = {"long_url": url,
-            "domain": "bit.ly",
-            }
+    json_content = {"long_url": url}
     response = requests.post(
         'https://api-ssl.bitly.com/v4/shorten',
         headers=headers,
-        json=data)
+        json=json_content)
     response.raise_for_status()
     return response.json()
 
@@ -58,8 +56,8 @@ def main() -> None:
             clicks = count_clicks(bitly_token, url)
             print('Клики', clicks)
         else:
-            data = shorten_link(bitly_token, url)
-            print('Битлинк ', data['link'])
+            json_content = shorten_link(bitly_token, url)
+            print('Битлинк ', json_content['link'])
     except requests.exceptions.HTTPError:
         print('Вы ввели неверную ссылку или неверный токен')
 
