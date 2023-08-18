@@ -52,15 +52,15 @@ def main() -> None:
     dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
     if os.path.exists(dotenv_path):
         load_dotenv(dotenv_path)
-    _BITLY_TOKEN = os.environ['BITLY_TOKEN']
+    bitly_token = os.environ['BITLY_TOKEN']
 
     url = input('Введите ссылку: ')
     try:
-        if is_bitlink(_BITLY_TOKEN, url):
-            clicks = count_clicks(_BITLY_TOKEN, url)
+        if is_bitlink(bitly_token, url):
+            clicks = count_clicks(bitly_token, url)
             print('Клики', clicks)
         else:
-            data = shorten_link(_BITLY_TOKEN, url)
+            data = shorten_link(bitly_token, url)
             print('Битлинк ', data['link'])
     except requests.exceptions.HTTPError:
         print('Ошибка')
