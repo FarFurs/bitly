@@ -27,7 +27,7 @@ def shorten_link(token, url):
         headers=headers,
         json=long_url)
     response.raise_for_status()
-    return response.json()
+    return response.json()['link']
 
 
 def count_clicks(token, link):
@@ -56,8 +56,8 @@ def main() -> None:
             clicks = count_clicks(bitly_token, url)
             print('Клики', clicks)
         else:
-            shorten_link_content = shorten_link(bitly_token, url)
-            print('Битлинк ', shorten_link_content['link'])
+            short_link = shorten_link(bitly_token, url)
+            print('Битлинк ', short_link)
     except requests.exceptions.HTTPError:
         print('Вы ввели неверную ссылку или неверный токен')
 
