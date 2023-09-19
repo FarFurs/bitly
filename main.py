@@ -2,6 +2,7 @@ import requests
 import os
 from dotenv import load_dotenv
 from urllib.parse import urlparse
+import argparse
 
 
 
@@ -50,7 +51,14 @@ def main() -> None:
         load_dotenv(dotenv_path)
     bitly_token = os.environ['BITLY_TOKEN']
 
-    url = input('Введите ссылку: ')
+    parser = argparse.ArgumentParser(description='Ссылка для работы')
+    parser.add_argument('url',
+                        help='Ссылка',
+                        type=str
+                        )
+    args = parser.parse_args()
+    url = args.url
+
     try:
         if is_bitlink(bitly_token, url):
             clicks = count_clicks(bitly_token, url)
