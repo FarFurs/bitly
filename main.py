@@ -8,7 +8,7 @@ import argparse
 
 
 def is_bitlink(token, url):
-    url = url.replace(f'{urlparse(url).scheme}://', '', 1)
+    url = urlparse(url)._replace(scheme='')
     headers = {
         'Authorization': f'Bearer {token}',
     }   
