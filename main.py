@@ -46,9 +46,9 @@ def count_clicks(token, link):
 
 
 def main() -> None:
-    dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
-    if os.path.exists(dotenv_path):
-        load_dotenv(dotenv_path)
+    # dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+    # if os.path.exists(dotenv_path):
+    load_dotenv()
     bitly_token = os.environ['BITLY_TOKEN']
 
     parser = argparse.ArgumentParser(description='Ссылка для работы')
